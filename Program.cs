@@ -77,6 +77,26 @@ namespace EVChargingWebService
 
             app.MapControllers();
 
+            // Seed default Backoffice user if none exists
+            using (var scope = app.Services.CreateScope())
+            {
+                // Creates a scope and seeds a default admin user.
+                var userRepo = scope.ServiceProvider.GetRequiredService<Repositories.IUserRepository>();
+                var existingAdmin = userRepo.GetByEmailAsync("admin@evcs.local").GetAwaiter().GetResult();
+                if (existingAdmin == null)
+                {
+                    var admin = new Models.User
+                    {
+                        Email = "admin@evcs.local",
+                        PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin#12345"),
+                        FullName = "Backoffice Admin",
+                        Role = Models.UserRole.Backoffice,
+                        IsActive = true
+                    };
+                    userRepo.CreateAsync(admin).GetAwaiter().GetResult();
+                }
+            }
+
             app.Run();
         }
     }
