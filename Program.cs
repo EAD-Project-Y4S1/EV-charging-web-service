@@ -26,6 +26,12 @@ namespace EVChargingWebService
             // - Repositories and Services
             builder.Services.AddSingleton<Repositories.IUserRepository, Repositories.UserRepository>();
             builder.Services.AddScoped<Services.IUserService, Services.UserService>();
+            builder.Services.AddSingleton<Repositories.IEVOwnerRepository, Repositories.EVOwnerRepository>();
+            builder.Services.AddScoped<Services.IEVOwnerService, Services.EVOwnerService>();
+            builder.Services.AddSingleton<Repositories.IChargingStationRepository, Repositories.ChargingStationRepository>();
+            builder.Services.AddScoped<Services.IChargingStationService, Services.ChargingStationService>();
+            builder.Services.AddSingleton<Repositories.IBookingRepository, Repositories.BookingRepository>();
+            builder.Services.AddScoped<Services.BookingService>();
 
             // - Authentication/Authorization
             var jwtSettings = new Config.JwtSettings();
