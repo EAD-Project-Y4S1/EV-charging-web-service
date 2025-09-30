@@ -60,6 +60,23 @@ namespace EVChargingWebService
                 });
             builder.Services.AddAuthorization();
 
+            // CORS: Allow frontend dev origins and auth headers
+            const string CorsPolicyName = "FrontendCors";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: CorsPolicyName, policy =>
+                {
+                    policy.WithOrigins(
+                            "http://localhost:5173",
+                            "http://127.0.0.1:5173",
+                            "https://localhost:5173",
+                            "https://127.0.0.1:5173"
+                        )
+                        .AllowAnyMethod()
+                        .WithHeaders("Content-Type", "Authorization");
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -69,7 +86,14 @@ namespace EVChargingWebService
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            // Avoid HTTPS redirection in development to prevent cert/redirect issues with frontend
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+
+            // Must be before authentication/authorization
+            app.UseCors(CorsPolicyName);
 
             app.UseAuthentication();
             app.UseAuthorization();

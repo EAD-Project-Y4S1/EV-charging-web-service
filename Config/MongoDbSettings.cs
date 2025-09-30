@@ -16,5 +16,3 @@ namespace EVChargingWebService.Config
         public string DatabaseName { get; set; } = string.Empty;
     }
 }
-
-
