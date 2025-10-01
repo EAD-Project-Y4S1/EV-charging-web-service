@@ -35,11 +35,11 @@ namespace EVChargingWebService.Services
             {
                 throw new InvalidOperationException("Reservation must be within 7 days and in the future");
             }
-            var owner = await _ownerRepository.GetByNICAsync(booking.OwnerNIC) ?? throw new KeyNotFoundException("Owner not found");
-            if (owner.Status != OwnerStatus.Active)
-            {
-                throw new InvalidOperationException("Owner is not active");
-            }
+            // var owner = await _ownerRepository.GetByNICAsync(booking.OwnerNIC) ?? throw new KeyNotFoundException("Owner not found");
+            // if (owner.Status != OwnerStatus.Active)
+            // {
+            //     throw new InvalidOperationException("Owner is not active");
+            // }
             var station = await _stationRepository.GetByIdAsync(booking.StationId) ?? throw new KeyNotFoundException("Station not found");
             if (station.Status != ActiveStatus.Active)
             {
