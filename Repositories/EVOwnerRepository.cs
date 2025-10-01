@@ -26,12 +26,9 @@ namespace EVChargingWebService.Repositories
             var database = client.GetDatabase(mongoOptions.Value.DatabaseName);
             _owners = database.GetCollection<EVOwner>("evowners");
 
-            // Ensure unique index on NIC.
-            var indexKeys = Builders<EVOwner>.IndexKeys.Ascending(o => o.NIC);
-            var indexModel = new CreateIndexModel<EVOwner>(indexKeys, new CreateIndexOptions { Unique = true });
-            _owners.Indexes.CreateOne(indexModel);
+            // No need to create index on NIC - it's the _id field which is automatically unique
+            // MongoDB automatically creates a unique index on _id for every collection
         }
-
         public async Task<EVOwner?> GetByNICAsync(string nic)
         {
             // Retrieves an owner by NIC.
