@@ -62,6 +62,7 @@ namespace EVChargingWebService
 
             // CORS: Allow frontend dev origins and auth headers
             const string CorsPolicyName = "FrontendCors";
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: CorsPolicyName, policy =>
@@ -70,10 +71,14 @@ namespace EVChargingWebService
                             "http://localhost:5173",
                             "http://127.0.0.1:5173",
                             "https://localhost:5173",
-                            "https://127.0.0.1:5173"
+                            "https://127.0.0.1:5173",
+                            "http://172.28.14.117:5173",   // your React app (if running on network)
+                            "http://172.28.14.117",         // base IP (general use)
+                            "http://172.28.14.117:81"       // IIS-hosted API
                         )
                         .AllowAnyMethod()
-                        .WithHeaders("Content-Type", "Authorization");
+                        .AllowAnyHeader()
+                        .AllowCredentials();
                 });
             });
 
