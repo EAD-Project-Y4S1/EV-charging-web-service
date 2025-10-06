@@ -33,6 +33,12 @@ namespace EVChargingWebService.Repositories
             return await _bookings.Find(b => b.Id == id).FirstOrDefaultAsync();
         }
 
+        public async Task<IReadOnlyList<Booking>> GetAllAsync()
+        {
+            // Retrieves all bookings.
+            return await _bookings.Find(Builders<Booking>.Filter.Empty).ToListAsync();
+        }
+
         public async Task<Booking> CreateAsync(Booking booking)
         {
             // Inserts a new booking.

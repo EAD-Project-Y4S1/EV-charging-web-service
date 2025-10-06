@@ -14,6 +14,9 @@ namespace EVChargingWebService.Repositories
     /// </summary>
     public interface IBookingRepository
     {
+        // Lists all bookings.
+        Task<IReadOnlyList<Booking>> GetAllAsync();
+
         // Gets a booking by id.
         Task<Booking?> GetByIdAsync(string id);
 

@@ -25,6 +25,7 @@ namespace EVChargingWebService.Models
     /// <summary>
     /// Booking entity stored in MongoDB.
     /// </summary>
+    [BsonIgnoreExtraElements]
     public class Booking
     {
         [BsonId]
@@ -103,6 +104,9 @@ namespace EVChargingWebService.Models
 
         [BsonElement("updatedAt")]
         public string? UpdatedAt { get; set; }
+
+        [BsonElement("sid")]
+        public long? Sid { get; set; }
     }
 }
 

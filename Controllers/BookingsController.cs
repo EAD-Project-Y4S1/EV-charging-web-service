@@ -26,6 +26,14 @@ namespace EVChargingWebService.Controllers
             _bookingService = bookingService;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult<IReadOnlyList<Booking>>> GetAll()
+        {
+            var bookings = await _bookingService.GetAllAsync();
+            return Ok(bookings);
+        }
+
         [HttpGet("owner/{nic}")]
         public async Task<ActionResult<IReadOnlyList<Booking>>> GetByOwner(string nic)
         {
@@ -64,8 +72,8 @@ namespace EVChargingWebService.Controllers
             return Ok(booking);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Backoffice,StationOperator")]
+        [HttpPost("create")]
+        [AllowAnonymous]
         public async Task<ActionResult<Booking>> Create([FromBody] Booking booking)
         {
             // Creates a booking.

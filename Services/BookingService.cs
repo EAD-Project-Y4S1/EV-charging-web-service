@@ -101,6 +101,12 @@ namespace EVChargingWebService.Services
             // Returns booking by id.
             return await _bookingRepository.GetByIdAsync(id);
         }
+
+        public async Task<IReadOnlyList<Booking>> GetAllAsync()
+        {
+            // Returns all bookings.
+            return await _bookingRepository.GetAllAsync();
+        }
     }
 }
 
