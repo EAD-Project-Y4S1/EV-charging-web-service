@@ -45,12 +45,12 @@ namespace EVChargingWebService.Controllers
             return Ok(bookings);
         }
 
-        [HttpGet("station/{stationId}")]
+        [HttpGet("station/{stationName}")]
         [Authorize(Roles = "Backoffice,StationOperator")]
-        public async Task<ActionResult<IReadOnlyList<Booking>>> GetByStation(string stationId)
+        public async Task<ActionResult<IReadOnlyList<Booking>>> GetByStation(string stationName)
         {
-            // Lists bookings for a station.
-            var bookings = await _bookingService.GetByStationAsync(stationId);
+            // Lists bookings for a station by name.
+            var bookings = await _bookingService.GetByStationAsync(stationName);
             return Ok(bookings);
         }
 

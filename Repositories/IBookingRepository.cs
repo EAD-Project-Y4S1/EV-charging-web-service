@@ -26,11 +26,11 @@ namespace EVChargingWebService.Repositories
         // Lists bookings by owner NIC.
         Task<IReadOnlyList<Booking>> GetByOwnerAsync(string ownerNIC);
 
-        // Lists bookings by station id.
-        Task<IReadOnlyList<Booking>> GetByStationAsync(string stationId);
+        // Lists bookings by station name.
+        Task<IReadOnlyList<Booking>> GetByStationAsync(string stationName);
 
-        // Lists active bookings by station id.
-        Task<int> CountActiveByStationAsync(string stationId);
+        // Lists active bookings by station name.
+        Task<int> CountActiveByStationAsync(string stationName);
     }
 }
 

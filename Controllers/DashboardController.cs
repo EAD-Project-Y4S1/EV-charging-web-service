@@ -49,7 +49,7 @@ namespace EVChargingWebService.Controllers
                 };
                 return Ok(summary);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Hide internal error details from clients; log if needed.
                 return StatusCode(500, new { message = "Failed to load dashboard summary" });

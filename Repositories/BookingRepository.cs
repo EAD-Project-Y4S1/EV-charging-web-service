@@ -50,20 +50,20 @@ namespace EVChargingWebService.Repositories
         public async Task<IReadOnlyList<Booking>> GetByOwnerAsync(string ownerNIC)
         {
             // Lists bookings for a specific owner.
-            return await _bookings.Find(b => b.OwnerNIC == ownerNIC).ToListAsync();
+            return await _bookings.Find(b => b.UserNic == ownerNIC).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<Booking>> GetByStationAsync(string stationId)
+        public async Task<IReadOnlyList<Booking>> GetByStationAsync(string stationName)
         {
-            // Lists bookings for a specific station.
-            return await _bookings.Find(b => b.StationId == stationId).ToListAsync();
+            // Lists bookings for a specific station by name.
+            return await _bookings.Find(b => b.StationName == stationName).ToListAsync();
         }
 
-        public async Task<int> CountActiveByStationAsync(string stationId)
+        public async Task<int> CountActiveByStationAsync(string stationName)
         {
-            // Counts active bookings for a station.
+            // Counts active bookings for a station by name.
             var filter = Builders<Booking>.Filter.And(
-                Builders<Booking>.Filter.Eq(b => b.StationId, stationId),
+                Builders<Booking>.Filter.Eq(b => b.StationName, stationName),
                 Builders<Booking>.Filter.Eq(b => b.Status, BookingStatus.Active)
             );
             return (int)await _bookings.CountDocumentsAsync(filter);

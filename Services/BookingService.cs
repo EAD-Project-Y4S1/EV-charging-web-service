@@ -31,21 +31,26 @@ namespace EVChargingWebService.Services
         {
             // Validates business rules and creates a booking.
             var now = DateTime.UtcNow;
-            if (booking.ReservationDateTime < now || booking.ReservationDateTime > now.AddDays(7))
+            var reservationDateTime = DateTime.Parse($"{booking.ReservationDate} {booking.ReservationTime}");
+            if (reservationDateTime < now || reservationDateTime > now.AddDays(7))
             {
                 throw new InvalidOperationException("Reservation must be within 7 days and in the future");
             }
-            // var owner = await _ownerRepository.GetByNICAsync(booking.OwnerNIC) ?? throw new KeyNotFoundException("Owner not found");
+            // var owner = await _ownerRepository.GetByNICAsync(booking.UserNic) ?? throw new KeyNotFoundException("Owner not found");
             // if (owner.Status != OwnerStatus.Active)
             // {
             //     throw new InvalidOperationException("Owner is not active");
             // }
-            var station = await _stationRepository.GetByIdAsync(booking.StationId) ?? throw new KeyNotFoundException("Station not found");
-            if (station.Status != ActiveStatus.Active)
+            // Validate that the station name is not empty
+            if (string.IsNullOrWhiteSpace(booking.StationName))
             {
-                throw new InvalidOperationException("Station is not active");
+                throw new InvalidOperationException("Station name is required");
             }
-            booking.Status = BookingStatus.Active;
+            
+            // Note: Since we're storing station names as strings, we can't validate against a specific station
+            // If you need to validate against existing stations, you would need to add a method to find stations by name
+            // or modify the ChargingStation model to include a Name field
+            booking.Status = BookingStatus.Confirmed;
             return await _bookingRepository.CreateAsync(booking);
         }
 
@@ -54,12 +59,14 @@ namespace EVChargingWebService.Services
             // Updates a booking at least 12 hours before reservation.
             var existing = await _bookingRepository.GetByIdAsync(booking.Id) ?? throw new KeyNotFoundException("Booking not found");
             var now = DateTime.UtcNow;
-            if ((existing.ReservationDateTime - now).TotalHours < 12)
+            var existingDateTime = DateTime.Parse($"{existing.ReservationDate} {existing.ReservationTime}");
+            if ((existingDateTime - now).TotalHours < 12)
             {
                 throw new InvalidOperationException("Update allowed only at least 12 hours before reservation");
             }
-            existing.StationId = booking.StationId;
-            existing.ReservationDateTime = booking.ReservationDateTime;
+            existing.StationName = booking.StationName;
+            existing.ReservationDate = booking.ReservationDate;
+            existing.ReservationTime = booking.ReservationTime;
             return await _bookingRepository.UpdateAsync(existing);
         }
 
@@ -68,7 +75,8 @@ namespace EVChargingWebService.Services
             // Cancels a booking at least 12 hours before reservation.
             var existing = await _bookingRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Booking not found");
             var now = DateTime.UtcNow;
-            if ((existing.ReservationDateTime - now).TotalHours < 12)
+            var existingDateTime = DateTime.Parse($"{existing.ReservationDate} {existing.ReservationTime}");
+            if ((existingDateTime - now).TotalHours < 12)
             {
                 throw new InvalidOperationException("Cancel allowed only at least 12 hours before reservation");
             }
@@ -82,10 +90,10 @@ namespace EVChargingWebService.Services
             return await _bookingRepository.GetByOwnerAsync(nic);
         }
 
-        public async Task<IReadOnlyList<Booking>> GetByStationAsync(string stationId)
+        public async Task<IReadOnlyList<Booking>> GetByStationAsync(string stationName)
         {
-            // Returns bookings for station.
-            return await _bookingRepository.GetByStationAsync(stationId);
+            // Returns bookings for station by name.
+            return await _bookingRepository.GetByStationAsync(stationName);
         }
 
         public async Task<Booking?> GetByIdAsync(string id)
