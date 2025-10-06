@@ -54,7 +54,7 @@ namespace EVChargingWebService.Controllers
         }
 
         [HttpGet("station/{stationName}")]
-        [Authorize(Roles = "Backoffice,StationOperator")]
+        [AllowAnonymous]
         public async Task<ActionResult<IReadOnlyList<Booking>>> GetByStation(string stationName)
         {
             // Lists bookings for a station by name.
@@ -63,7 +63,7 @@ namespace EVChargingWebService.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Backoffice,StationOperator")]
+        [AllowAnonymous]
         public async Task<ActionResult<Booking>> GetById(string id)
         {
             // Gets booking by id.
@@ -93,7 +93,7 @@ namespace EVChargingWebService.Controllers
         }
 
         [HttpPost("{id}/cancel")]
-        [Authorize(Roles = "Backoffice,StationOperator")]
+        [AllowAnonymous]
         public async Task<ActionResult> Cancel(string id)
         {
             // Cancels a booking.

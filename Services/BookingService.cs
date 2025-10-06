@@ -59,10 +59,12 @@ namespace EVChargingWebService.Services
             // Updates a booking at least 12 hours before reservation.
             var existing = await _bookingRepository.GetByIdAsync(booking.Id) ?? throw new KeyNotFoundException("Booking not found");
             var now = DateTime.UtcNow;
-            var existingDateTime = DateTime.Parse($"{existing.ReservationDate} {existing.ReservationTime}");
-            if ((existingDateTime - now).TotalHours < 12)
+            if (DateTime.TryParse($"{existing.ReservationDate} {existing.ReservationTime}", out var existingDateTime))
             {
-                throw new InvalidOperationException("Update allowed only at least 12 hours before reservation");
+                if ((existingDateTime - now).TotalHours < 12)
+                {
+                    throw new InvalidOperationException("Update allowed only at least 12 hours before reservation");
+                }
             }
             existing.StationName = booking.StationName;
             existing.ReservationDate = booking.ReservationDate;
@@ -75,10 +77,12 @@ namespace EVChargingWebService.Services
             // Cancels a booking at least 12 hours before reservation.
             var existing = await _bookingRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Booking not found");
             var now = DateTime.UtcNow;
-            var existingDateTime = DateTime.Parse($"{existing.ReservationDate} {existing.ReservationTime}");
-            if ((existingDateTime - now).TotalHours < 12)
+            if (DateTime.TryParse($"{existing.ReservationDate} {existing.ReservationTime}", out var existingDateTime))
             {
-                throw new InvalidOperationException("Cancel allowed only at least 12 hours before reservation");
+                if ((existingDateTime - now).TotalHours < 12)
+                {
+                    throw new InvalidOperationException("Cancel allowed only at least 12 hours before reservation");
+                }
             }
             existing.Status = BookingStatus.Cancelled;
             return await _bookingRepository.UpdateAsync(existing);
