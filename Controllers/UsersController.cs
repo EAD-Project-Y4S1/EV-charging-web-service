@@ -26,9 +26,15 @@ namespace EVChargingWebService.Controllers
 
         public class CreateUserRequest
         {
+            [System.ComponentModel.DataAnnotations.Required]
+            [System.ComponentModel.DataAnnotations.EmailAddress]
             public string Email { get; set; } = string.Empty;
+            [System.ComponentModel.DataAnnotations.Required]
             public string Password { get; set; } = string.Empty;
+            [System.ComponentModel.DataAnnotations.Required]
             public string FullName { get; set; } = string.Empty;
+            [System.ComponentModel.DataAnnotations.Required]
+            [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue)]
             public UserRole Role { get; set; }
         }
 
@@ -59,15 +65,22 @@ namespace EVChargingWebService.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         [Authorize]
         public async Task<ActionResult<User>> Create([FromBody] CreateUserRequest request)
         {
             // Creates a user.
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var user = await _userService.CreateAsync(request.Email, request.Password, request.FullName, request.Role);
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+            try
+            {
+                var user = await _userService.CreateAsync(request.Email, request.Password, request.FullName, request.Role);
+                return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // e.g., duplicate email or business rule violation
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
