@@ -26,7 +26,7 @@ namespace EVChargingWebService.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpGet]
+        [HttpGet("getall")]
         [AllowAnonymous]
         public async Task<ActionResult<IReadOnlyList<Booking>>> GetAll()
         {
