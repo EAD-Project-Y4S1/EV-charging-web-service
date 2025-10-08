@@ -51,7 +51,7 @@ namespace EVChargingWebService.Services
             // If you need to validate against existing stations, you would need to add a method to find stations by name
             // or modify the ChargingStation model to include a Name field
             booking.Status = BookingStatus.Confirmed;
-            return await _bookingRepository.CreateAsync(booking);
+                return await _bookingRepository.CreateAsync(booking);
         }
 
         public async Task<bool> UpdateAsync(Booking booking)
