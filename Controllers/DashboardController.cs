@@ -40,12 +40,13 @@ namespace EVChargingWebService.Controllers
                 var users = await _userService.GetAllAsync();
                 var owners = await _ownerService.GetAllAsync();
                 var stations = await _stationService.GetAllAsync();
+                var bookings = await _bookingService.GetAllAsync();
                 var summary = new
                 {
                     users = users.Count,
                     owners = owners.Count,
                     stations = stations.Count,
-                    bookings = 0
+                    bookings = bookings.Count
                 };
                 return Ok(summary);
             }
